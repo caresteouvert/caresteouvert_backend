@@ -1,0 +1,12 @@
+{
+	"PG_HOST": "localhost",
+	"PG_USER": "postgres",
+	"PG_PORT": "5432",
+	"PG_DB": "caresteouvert",
+	"OSM_API_URL": "https://master.apis.dev.openstreetmap.org",
+	"OSM_API_KEY": "Rvvh2S3l6TN3oNQoDeWxymNXg33w5ytkMQ1sUj5C",
+	"OSM_API_SECRET": "5ezDqJBR2xdN2skGHJSLMDkswwKHnjcZwmQpHvG2",
+	"OSM_USER": "caresteouvert_visitors",
+	"OSM_PASS": "password",
+	"DELAY_OSM": 300000
+}
