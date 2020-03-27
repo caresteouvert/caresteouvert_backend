@@ -2,7 +2,6 @@
  * API main code
  */
 
-const CONFIG = require('../config.json');
 const express = require('express');
 const cors = require('cors');
 const compression = require("compression");
@@ -88,6 +87,5 @@ app.use((req, res) => {
 // Start
 app.listen(port, () => {
 	console.log('API started on port: ' + port);
-	osm.sendNotes();
-	setTimeout(() => osm.sendData(), CONFIG.DELAY_OSM / 2);
+	osm.start();
 });

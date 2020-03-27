@@ -2,15 +2,16 @@ global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 global.btoa = str => Buffer.from(str, 'binary').toString('base64');
 
 const OsmRequest = require("osm-request");
-const CONFIG = require('../config.json');
 const db = require('./db');
+
+const delay = parseInt(process.env.DELAY_OSM) || 300000;
 
 // Create OSM Request
 const osmApi = new OsmRequest({
-	endpoint: CONFIG.OSM_API_URL,
-	oauthConsumerKey: CONFIG.OSM_API_KEY,
-	oauthSecret: CONFIG.OSM_API_SECRET,
-	basicauth: { user: CONFIG.OSM_USER, pass: CONFIG.OSM_PASS }
+	endpoint: process.env.OSM_API_URL,
+	oauthConsumerKey: process.env.OSM_API_KEY,
+	oauthSecret: process.env.OSM_API_SECRET,
+	basicauth: { user: process.env.OSM_USER, pass: process.env.OSM_PASS }
 });
 
 const STATUS_TO_TXT = { "open": "ouvert pendant le confinement", "closed": "fermé pendant le confinement" };
@@ -18,7 +19,7 @@ const STATUS_TO_TXT = { "open": "ouvert pendant le confinement", "closed": "ferm
 // Automatic check for notes
 function sendNotesToOSM() {
 	const afterAll = () => {
-		setTimeout(sendNotesToOSM, CONFIG.DELAY_OSM);
+		setTimeout(sendNotesToOSM, delay);
 	};
 
 	db.getContributionsForNotes()
@@ -88,7 +89,7 @@ Pour corriger cette note, utilisez les tags opening_hours:covid19 et description
 // Automatic check for sending updates
 function sendDataToOSM() {
 	const afterAll = () => {
-		setTimeout(sendDataToOSM, CONFIG.DELAY_OSM);
+		setTimeout(sendDataToOSM, delay);
 	};
 
 	db.getContributionsForUpload()
@@ -167,5 +168,7 @@ function sendDataToOSM() {
 	});
 }
 
-exports.sendData = sendDataToOSM;
-exports.sendNotes = sendNotesToOSM;
+exports.start = () => {
+	sendDataToOSM();
+	setTimeout(() => sendNotesToOSM(), delay / 2);
+};

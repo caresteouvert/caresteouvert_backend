@@ -3,22 +3,9 @@
  */
 
 const { Pool } = require('pg');
-const fs = require('fs');
-const CONFIG = require('../config.json');
 
 // Create pool of connections
-let pool = null;
-
-function createPool() {
-	pool = new Pool({
-		user: CONFIG.PG_USER,
-		host: CONFIG.PG_HOST,
-		database: CONFIG.PG_DB,
-		port: CONFIG.PG_PORT
-	});
-}
-
-createPool();
+let pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 exports.addContribution = (osmid, name, status, opening_hours, details, lon, lat) => {
 	return pool.query(
