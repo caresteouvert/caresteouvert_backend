@@ -13,6 +13,78 @@ const osmApi = new OsmRequest({
 	basicauth: { user: CONFIG.OSM_USER, pass: CONFIG.OSM_PASS }
 });
 
+const STATUS_TO_TXT = { "open": "ouvert pendant le confinement", "closed": "fermé pendant le confinement" };
+
+// Automatic check for notes
+function sendNotesToOSM() {
+	const afterAll = () => {
+		setTimeout(sendNotesToOSM, CONFIG.DELAY_OSM);
+	};
+
+	db.getContributionsForNotes()
+	.then(notes => {
+		if(notes.length > 0) {
+			const sentNotesIds = [];
+
+			const processNext = () => {
+				if(notes.length === 0) { return Promise.resolve(); }
+
+				const note = notes.pop();
+
+				const text =
+`Signalement #covid19 #caresteouvert
+
+Nom : ${note.name}
+URL : https://www.openstreetmap.org/${note.osmid}
+
+État : ${STATUS_TO_TXT[note.status]}
+Détails :
+${note.details}
+
+Pour corriger cette note, utilisez les tags opening_hours:covid19 et description:covid19 : https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours:covid19`;
+
+				return osmApi.createNote(note.lat, note.lon, text)
+				.then(() => {
+					sentNotesIds.push(note.id);
+					return processNext();
+				})
+				.catch(e => {
+					console.error(e);
+					return processNext();
+				});
+			}
+
+			processNext()
+			.then(() => {
+				// Send back edited features into DB
+				if(sentNotesIds.length > 0) {
+					db.setContributionsSent(sentNotesIds)
+					.then(() => {
+						console.log(`Created ${sentNotesIds.length} notes on OSM`);
+						afterAll();
+					})
+					.catch(e => {
+						console.error(e);
+						afterAll();
+					});
+				}
+				else {
+// 					console.log("No notes has been created");
+					afterAll();
+				}
+			});
+		}
+		else {
+// 			console.log("No notes to send to OSM");
+			afterAll();
+		}
+	})
+	.catch(e => {
+		console.error(e);
+		afterAll();
+	});
+}
+
 // Automatic check for sending updates
 function sendDataToOSM() {
 	const afterAll = () => {
@@ -23,7 +95,7 @@ function sendDataToOSM() {
 	.then(async contribs => {
 		if(contribs.length > 0) {
 			// Create changeset
-			const changesetId = await osmApi.createChangeset('Ça reste ouvert (caresteouvert.fr)', 'Ajout informations liées aux confinement #covid19 #caresteouvert');
+			const changesetId = await osmApi.createChangeset('caresteouvert.fr', 'Ajout informations liées aux confinement #covid19 #caresteouvert');
 
 			if(changesetId) {
 				// Go through all edited features
@@ -36,7 +108,7 @@ function sendDataToOSM() {
 						const tags = {};
 
 						if(contrib.details && contrib.details.trim().length > 0) {
-							tags["note:covid19"] = contrib.details.trim();
+							tags["description:covid19"] = contrib.details.trim();
 						}
 
 						if(contrib.status === "open") {
@@ -46,12 +118,8 @@ function sendDataToOSM() {
 							tags["opening_hours:covid19"] = "off";
 						}
 
-						elem = osmApi.setTags(elem, {
-							"opening_hours:covid19": contrib.opening_hours,
-							"note:covid19": contrib.details
-						});
-
 						// Send to API
+						elem = osmApi.setTags(elem, tags);
 						elem = osmApi.setTimestampToNow(elem);
 						const result = await osmApi.sendElement(elem, changesetId);
 
@@ -79,7 +147,7 @@ function sendDataToOSM() {
 					});
 				}
 				else {
-					console.log("Nothing has been edited");
+// 					console.log("Nothing has been edited");
 					afterAll();
 				}
 			}
@@ -89,7 +157,7 @@ function sendDataToOSM() {
 			}
 		}
 		else {
-			console.log("Nothing to send to OSM");
+// 			console.log("Nothing to send to OSM");
 			afterAll();
 		}
 	})
@@ -100,3 +168,4 @@ function sendDataToOSM() {
 }
 
 exports.sendData = sendDataToOSM;
+exports.sendNotes = sendNotesToOSM;

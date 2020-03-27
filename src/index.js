@@ -43,15 +43,36 @@ app.post("/contribute/:type/:id", (req, res) => {
 	}
 
 	// Check details
-	if(!(req.body.details === null || req.body.details === undefined || typeof req.body.details)) {
+	if(!(req.body.details === null || req.body.details === undefined || typeof req.body.details === "string")) {
 		return res.status(400).send("Invalid details : "+req.body.details);
 	}
 
-	// TODO Check hours
-	const opening_hours = "24/7";
+	let details = (req.body.details || "").trim();
+	if(details.length === 0) { details = null; }
+
+	// Check name
+	if(!(req.body.name === null || req.body.name === undefined || typeof req.body.name === "string")) {
+		return res.status(400).send("Invalid name : "+req.body.name);
+	}
+
+	let name = (req.body.name || "").trim();
+	if(name.length === 0) { name = null; }
+
+	// Check lat
+	if(!/^-?\d+(\.\d+)?$/.test(req.body.lat)) {
+		return res.status(400).send("Invalid lat : "+req.body.lat);
+	}
+
+	// Check lon
+	if(!/^-?\d+(\.\d+)?$/.test(req.body.lon)) {
+		return res.status(400).send("Invalid lon : "+req.body.lon);
+	}
+
+	// TODO Check and parse hours
+	const opening_hours = null;
 
 	// Save in database
-	return db.addContribution(osmid, req.body.state, opening_hours, req.body.details)
+	return db.addContribution(osmid, name, req.body.state, opening_hours, req.body.details, req.body.lon, req.body.lat)
 	.then(() => res.send("OK"))
 	.catch(e => {
 		console.error(e);
@@ -67,5 +88,6 @@ app.use((req, res) => {
 // Start
 app.listen(port, () => {
 	console.log('API started on port: ' + port);
-	osm.sendData();
+	osm.sendNotes();
+	setTimeout(() => osm.sendData(), CONFIG.DELAY_OSM / 2);
 });
