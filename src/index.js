@@ -71,7 +71,7 @@ app.post("/contribute/:type/:id", (req, res) => {
 	const opening_hours = null;
 
 	// Save in database
-	return db.addContribution(osmid, name, req.body.state, opening_hours, req.body.details, req.body.lon, req.body.lat)
+	return db.addContribution(osmid, name, req.body.state, opening_hours, details, req.body.lon, req.body.lat)
 	.then(() => res.send("OK"))
 	.catch(e => {
 		console.error(e);
