@@ -5,7 +5,8 @@
 Requires :
 
 * NodeJS >= 9
-* PostgreSQL
+* PostgreSQL >= 10
+* PostGIS >= 2.5
 
 Then run these commands :
 
@@ -26,3 +27,4 @@ npm run start:osm # Launch OSM data sending process
 * `OSM_API_SECRET` : OSM API secret key
 * `OSM_USER` : OSM user name
 * `OSM_PASS` : OSM user password
+* `OSM_LANG` : language used for OpenStreetMap notes and changesets (code used in `src/locales.json`)

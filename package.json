@@ -18,6 +18,7 @@
     "express": "^4.17.1",
     "osm-request": "^1.2.6",
     "pg": "^7.14.0",
+    "transport-hours": "git+https://github.com/Jungle-Bus/transport-hours-js.git",
     "xmlhttprequest": "^1.8.0"
   }
 }
