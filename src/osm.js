@@ -96,7 +96,7 @@ function sendDataToOSM() {
 	.then(async contribs => {
 		if(contribs.length > 0) {
 			// Create changeset
-			const changesetId = await osmApi.createChangeset('caresteouvert.fr', 'Ajout informations liées aux confinement #covid19 #caresteouvert');
+			const changesetId = await osmApi.createChangeset('caresteouvert.fr', 'Ajout d\'informations liées au confinement #covid19 #caresteouvert');
 
 			if(changesetId) {
 				// Go through all edited features
