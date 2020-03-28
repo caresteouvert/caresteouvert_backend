@@ -5,9 +5,7 @@
 const express = require('express');
 const cors = require('cors');
 const compression = require("compression");
-const fs = require('fs');
 const db = require('./db');
-const osm = require('./osm');
 
 // Init API
 const app = express();
@@ -87,5 +85,4 @@ app.use((req, res) => {
 // Start
 app.listen(port, () => {
 	console.log('API started on port: ' + port);
-	osm.start();
 });

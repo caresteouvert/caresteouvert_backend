@@ -4,7 +4,8 @@
   "description": "Back-end for Ça reste ouvert (caresteouvert.fr)",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start:api": "node src/index.js",
+    "start:osm": "node src/osm.js"
   },
   "author": "Ça reste ouvert",
   "license": "AGPL-3.0",

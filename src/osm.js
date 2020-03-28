@@ -168,7 +168,11 @@ function sendDataToOSM() {
 	});
 }
 
-exports.start = () => {
+function start() {
+	console.log("OSM data sending process started");
 	sendDataToOSM();
 	setTimeout(() => sendNotesToOSM(), delay / 2);
 };
+
+// Start process
+start();

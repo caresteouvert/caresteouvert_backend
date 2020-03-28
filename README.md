@@ -13,7 +13,8 @@ Then run these commands :
 cd caresteouvert_backend/
 npm install
 psql -d mydb -f src/init.sql
-npm run start
+npm run start:api # Launch API listening process
+npm run start:osm # Launch OSM data sending process
 ```
 
 ## Environment variables
