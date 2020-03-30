@@ -101,6 +101,14 @@ app.post("/contribute/:type/:id", (req, res) => {
 			otherTags = req.body.tags;
 			delete otherTags["opening_hours:covid19"];
 			delete otherTags["description:covid19"];
+
+			if(otherTags.opening_hours === "same" && opening_hours) {
+				otherTags.opening_hours = opening_hours;
+			}
+			else {
+				delete otherTags.opening_hours;
+			}
+
 			if(Object.keys(otherTags).length === 0) {
 				otherTags = null;
 			}
