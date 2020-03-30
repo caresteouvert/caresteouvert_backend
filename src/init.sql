@@ -9,5 +9,6 @@ CREATE TABLE IF NOT EXISTS contributions(
 	status VARCHAR NOT NULL,
 	opening_hours VARCHAR,
 	details VARCHAR,
+	tags JSONB,
 	geom GEOMETRY(Point, 4326) NOT NULL
 );

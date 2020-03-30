@@ -6,6 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const compression = require("compression");
 const db = require('./db');
+const OpeningHoursBuilder = require("transport-hours/src/OpeningHoursBuilder");
 
 // Init API
 const app = express();
@@ -65,11 +66,57 @@ app.post("/contribute/:type/:id", (req, res) => {
 		return res.status(400).send("Invalid lon : "+req.body.lon);
 	}
 
-	// TODO Check and parse hours
-	const opening_hours = null;
+	// Check and parse hours
+	let opening_hours = null;
+
+	if(!(req.body.opening_hours === null || req.body.opening_hours === undefined || Array.isArray(req.body.opening_hours))) {
+		return res.status(400).send("Invalid opening_hours : "+req.body.details);
+	}
+
+	if(req.body.opening_hours) {
+		try {
+			opening_hours = (new OpeningHoursBuilder(req.body.opening_hours)).getValue();
+		}
+		catch(e) {
+			return res.status(400).send("Invalid opening_hours : "+e);
+		}
+	}
+
+	// Check other tags
+	let otherTags = null;
+
+	if(req.body.tags) {
+		if(
+			typeof req.body.tags !== "object"
+			|| Object.entries(req.body.tags).find(e => (
+				typeof e[0] !== "string"
+				|| typeof e[1] !== "string"
+				|| e[0].trim().length === 0
+				|| e[1].trim().length === 0
+			))
+		) {
+			return res.status(400).send("Invalid tags : "+req.body.tags);
+		}
+		else {
+			otherTags = req.body.tags;
+			delete otherTags["opening_hours:covid19"];
+			delete otherTags["description:covid19"];
+
+			if(otherTags.opening_hours === "same" && opening_hours) {
+				otherTags.opening_hours = opening_hours;
+			}
+			else {
+				delete otherTags.opening_hours;
+			}
+
+			if(Object.keys(otherTags).length === 0) {
+				otherTags = null;
+			}
+		}
+	}
 
 	// Save in database
-	return db.addContribution(osmid, name, req.body.state, opening_hours, details, req.body.lon, req.body.lat)
+	return db.addContribution(osmid, name, req.body.state, opening_hours, details, req.body.lon, req.body.lat, otherTags)
 	.then(() => res.send("OK"))
 	.catch(e => {
 		console.error(e);

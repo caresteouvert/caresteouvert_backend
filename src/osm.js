@@ -3,6 +3,7 @@ global.btoa = str => Buffer.from(str, 'binary').toString('base64');
 
 const OsmRequest = require("osm-request");
 const db = require('./db');
+const i18n = require('./locales.json')[process.env.OSM_LANG || "fr"];
 
 const delay = parseInt(process.env.DELAY_OSM) || 300000;
 
@@ -13,8 +14,6 @@ const osmApi = new OsmRequest({
 	oauthSecret: process.env.OSM_API_SECRET,
 	basicauth: { user: process.env.OSM_USER, pass: process.env.OSM_PASS }
 });
-
-const STATUS_TO_TXT = { "open": "ouvert pendant le confinement", "closed": "fermé pendant le confinement" };
 
 // Automatic check for notes
 function sendNotesToOSM() {
@@ -32,17 +31,16 @@ function sendNotesToOSM() {
 
 				const note = notes.pop();
 
-				const text =
-`Signalement #covid19 #caresteouvert
+				const text = `${i18n.note.header}
 
-Nom : ${note.name}
-URL : https://www.openstreetmap.org/${note.osmid}
+${i18n.note.name} : ${note.name || i18n.note.unknown}
+${i18n.note.url} : ${process.env.OSM_API_URL}/${note.osmid}
 
-État : ${STATUS_TO_TXT[note.status]}
-Détails :
-${note.details}
-
-Pour corriger cette note, utilisez les tags opening_hours:covid19 et description:covid19 : https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours:covid19`;
+${i18n.note.status} : ${i18n.status[note.status]}
+${note.details ? (i18n.note.details + " : " + note.details + "\n") : ""}
+${note.opening_hours ? ("opening_hours:covid19=" + note.opening_hours) : ""}
+${note.tags ? (Object.entries(note.tags).map(e => e.join("=")).join("\n")+"\n") : ""}
+${i18n.note.footer}`;
 
 				return osmApi.createNote(note.lat, note.lon, text)
 				.then(() => {
@@ -96,7 +94,7 @@ function sendDataToOSM() {
 	.then(async contribs => {
 		if(contribs.length > 0) {
 			// Create changeset
-			const changesetId = await osmApi.createChangeset('caresteouvert.fr', 'Ajout d\'informations liées au confinement #covid19 #caresteouvert');
+			const changesetId = await osmApi.createChangeset(i18n.changeset.editor, i18n.changeset.comment);
 
 			if(changesetId) {
 				// Go through all edited features
@@ -106,7 +104,7 @@ function sendDataToOSM() {
 
 					if(elem) {
 						// Define tags
-						const tags = {};
+						const tags = contrib.tags ? contrib.tags : {};
 
 						if(contrib.details && contrib.details.trim().length > 0) {
 							tags["description:covid19"] = contrib.details.trim();
