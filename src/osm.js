@@ -6,6 +6,7 @@ const db = require('./db');
 const i18n = require('./locales.json')[process.env.OSM_LANG || "fr"];
 
 const delay = parseInt(process.env.DELAY_OSM) || 300000;
+let delayedContributionsSent = [];
 
 // Create OSM Request
 const osmApi = new OsmRequest({
@@ -68,13 +69,11 @@ ${i18n.note.footer}`;
 					});
 				}
 				else {
-// 					console.log("No notes has been created");
 					afterAll();
 				}
 			});
 		}
 		else {
-// 			console.log("No notes to send to OSM");
 			afterAll();
 		}
 	})
@@ -90,80 +89,106 @@ function sendDataToOSM() {
 		setTimeout(sendDataToOSM, delay);
 	};
 
-	db.getContributionsForUpload()
-	.then(async contribs => {
-		if(contribs.length > 0) {
-			// Create changeset
-			const changesetId = await osmApi.createChangeset(i18n.changeset.editor, i18n.changeset.comment);
+	if(delayedContributionsSent.length > 0) {
+		db.setContributionsSent(delayedContributionsSent)
+		.then(() => {
+			console.log("Delayed data sent to DB");
+			delayedContributionsSent = [];
+			sendDataToOSM();
+		})
+		.catch(e => {
+			console.error("Can't send data to DB", e);
+			afterAll();
+		});
+	}
+	else {
+		db.getContributionsForUpload()
+		.then(async contribs => {
+			if(contribs.length > 0) {
+				// Create changeset
+				const changesetId = await osmApi.createChangeset(i18n.changeset.editor, i18n.changeset.comment);
 
-			if(changesetId) {
-				// Go through all edited features
-				const editedElemIds = [];
-				for(let contrib of contribs) {
-					let elem = await osmApi.fetchElement(contrib.osmid);
+				if(changesetId) {
+					// Go through all edited features
+					const editedElemIds = [];
+					for(let contrib of contribs) {
+						try {
+							let elem = await osmApi.fetchElement(contrib.osmid);
 
-					if(elem) {
-						// Define tags
-						const tags = contrib.tags ? contrib.tags : {};
+							if(elem) {
+								// Define tags
+								const tags = contrib.tags ? contrib.tags : {};
 
-						if(contrib.details && contrib.details.trim().length > 0) {
-							tags["description:covid19"] = contrib.details.trim();
+								if(contrib.details && contrib.details.trim().length > 0) {
+									tags["description:covid19"] = contrib.details.trim();
+								}
+
+								if(contrib.status === "open") {
+									tags["opening_hours:covid19"] = contrib.opening_hours || "open";
+								}
+								else if(contrib.status === "closed") {
+									tags["opening_hours:covid19"] = "off";
+								}
+
+								// Send to API
+								elem = osmApi.setTags(elem, tags);
+								elem = osmApi.setTimestampToNow(elem);
+								const result = await osmApi.sendElement(elem, changesetId);
+
+								if(result) {
+									editedElemIds.push(contrib.id);
+								}
+								else {
+									console.error("Failed to update OSM element", contrib.osmid);
+								}
+							}
 						}
-
-						if(contrib.status === "open") {
-							tags["opening_hours:covid19"] = contrib.opening_hours || "open";
-						}
-						else if(contrib.status === "closed") {
-							tags["opening_hours:covid19"] = "off";
-						}
-
-						// Send to API
-						elem = osmApi.setTags(elem, tags);
-						elem = osmApi.setTimestampToNow(elem);
-						const result = await osmApi.sendElement(elem, changesetId);
-
-						if(result) {
-							editedElemIds.push(contrib.id);
-						}
-						else {
-							console.error("Failed to update OSM element", contrib.osmid);
+						catch(e) {
+							console.error("Error with", contrib.osmid, ":", e);
 						}
 					}
-				}
 
-				osmApi.closeChangeset(changesetId);
+					osmApi.closeChangeset(changesetId);
 
-				// Send back edited features into DB
-				if(editedElemIds.length > 0) {
-					db.setContributionsSent(editedElemIds)
-					.then(() => {
-						console.log(`Updated ${editedElemIds.length} elements on OSM`);
+					// Send back edited features into DB
+					if(editedElemIds.length > 0) {
+						function sleep(ms) {
+						return new Promise(resolve => setTimeout(resolve, ms));
+						}
+
+						console.log("go stop db");
+						await sleep(30000);
+						console.log("try back");
+
+						db.setContributionsSent(editedElemIds)
+						.then(() => {
+							console.log(`Updated ${editedElemIds.length} elements on OSM`);
+							afterAll();
+						})
+						.catch(e => {
+							delayedContributionsSent = delayedContributionsSent.concat(editedElemIds);
+							console.error(e);
+							afterAll();
+						});
+					}
+					else {
 						afterAll();
-					})
-					.catch(e => {
-						console.error(e);
-						afterAll();
-					});
+					}
 				}
 				else {
-// 					console.log("Nothing has been edited");
+					console.error("Can't create changeset");
 					afterAll();
 				}
 			}
 			else {
-				console.error("Can't create changeset");
 				afterAll();
 			}
-		}
-		else {
-// 			console.log("Nothing to send to OSM");
+		})
+		.catch(e => {
+			console.error(e);
 			afterAll();
-		}
-	})
-	.catch(e => {
-		console.error(e);
-		afterAll();
-	});
+		});
+	}
 }
 
 function start() {

@@ -7,6 +7,11 @@ const { Pool } = require('pg');
 // Create pool of connections
 let pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
+// Events
+pool.on('error', (err, client) => {
+	console.error("Database unavailable", err);
+});
+
 exports.addContribution = (osmid, name, status, opening_hours, details, lon, lat, tags) => {
 	return pool.query(
 		"INSERT INTO contributions (osmid, name, status, opening_hours, details, geom, tags) VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_Point($6, $7), 4326), $8)",
