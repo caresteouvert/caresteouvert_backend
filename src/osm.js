@@ -113,7 +113,7 @@ function sendDataToOSM() {
 						}
 
 						if(contrib.status === "open") {
-							tags["opening_hours:covid19"] = contrib.opening_hours || "same";
+							tags["opening_hours:covid19"] = contrib.opening_hours || "open";
 						}
 						else if(contrib.status === "closed") {
 							tags["opening_hours:covid19"] = "off";
