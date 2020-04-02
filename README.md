@@ -18,6 +18,7 @@ npm run start:api # Launch API listening process
 npm run start:osm # Launch OSM data sending process
 ```
 
+
 ## Environment variables
 
 * `DATABASE_URL` : connection string for PostgreSQL database
@@ -28,3 +29,10 @@ npm run start:osm # Launch OSM data sending process
 * `OSM_USER` : OSM user name
 * `OSM_PASS` : OSM user password
 * `OSM_LANG` : language used for OpenStreetMap notes and changesets (code used in `src/locales.json`)
+
+
+## License
+
+Copyright (c) "Ça reste ouvert" 2020
+
+Released under the AGPL v3 terms, see the [LICENSE](LICENSE.txt) file to read the full text.
