@@ -115,6 +115,8 @@ function sendDataToOSM() {
 		db.getContributionsForUpload()
 		.then(async contribs => {
 			if(contribs.length > 0) {
+				const i18n = getBestI18nAvailable("en");
+
 				// Create changeset
 				const changesetId = await osmApi.createChangeset(i18n.changeset.editor, i18n.changeset.comment);
 
@@ -162,14 +164,6 @@ function sendDataToOSM() {
 
 					// Send back edited features into DB
 					if(editedElemIds.length > 0) {
-						function sleep(ms) {
-						return new Promise(resolve => setTimeout(resolve, ms));
-						}
-
-						console.log("go stop db");
-						await sleep(30000);
-						console.log("try back");
-
 						db.setContributionsSent(editedElemIds)
 						.then(() => {
 							console.log(`Updated ${editedElemIds.length} elements on OSM`);

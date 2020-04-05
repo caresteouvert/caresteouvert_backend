@@ -1,7 +1,7 @@
 {
     "status": {
-        "open": "open during confinement",
-        "closed": "closed during confinement"
+        "open": "open during lockdown",
+        "closed": "closed during lockdown"
     },
     "note": {
         "header": "Note #covid19 #caresteouvert",
@@ -14,6 +14,6 @@
     },
     "changeset": {
         "editor": "caresteouvert.fr",
-        "comment": "Information about confinement #covid19 #caresteouvert"
+        "comment": "Information about lockdown #covid19 #caresteouvert"
     }
 }
