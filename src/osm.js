@@ -8,6 +8,14 @@ const i18n = require('./locales.json')[process.env.OSM_LANG || "fr"];
 const delay = parseInt(process.env.DELAY_OSM) || 300000;
 let delayedContributionsSent = [];
 
+function getBestI18nAvailable(language) {
+	const i18n = require('./locales.json');
+	if (Object.keys(i18n).includes(language)) {
+		return i18n[language];
+	}
+	return i18n[process.env.OSM_LANG || "fr"];
+}
+
 // Create OSM Request
 const osmApi = new OsmRequest({
 	endpoint: process.env.OSM_API_URL,
@@ -31,6 +39,8 @@ function sendNotesToOSM() {
 				if(notes.length === 0) { return Promise.resolve(); }
 
 				const note = notes.pop();
+
+				const i18n = getBestI18nAvailable(note.language);
 
 				const text = `${i18n.note.header}
 
