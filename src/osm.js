@@ -3,10 +3,18 @@ global.btoa = str => Buffer.from(str, 'binary').toString('base64');
 
 const OsmRequest = require("osm-request");
 const db = require('./db');
-const i18n = require('./locales.json')[process.env.OSM_LANG || "fr"];
 
+const languageFallback = process.env.OSM_LANG || "fr";
 const delay = parseInt(process.env.DELAY_OSM) || 300000;
 let delayedContributionsSent = [];
+
+function getBestI18nAvailable(language) {
+	try {
+		return require(`../locales/${language}.json`);
+	} catch (e) {
+		return require(`../locales/${languageFallback}.json`);
+	}
+}
 
 // Create OSM Request
 const osmApi = new OsmRequest({
@@ -31,6 +39,8 @@ function sendNotesToOSM() {
 				if(notes.length === 0) { return Promise.resolve(); }
 
 				const note = notes.pop();
+
+				const i18n = getBestI18nAvailable(note.language);
 
 				const text = `${i18n.note.header}
 
@@ -105,6 +115,8 @@ function sendDataToOSM() {
 		db.getContributionsForUpload()
 		.then(async contribs => {
 			if(contribs.length > 0) {
+				const i18n = getBestI18nAvailable("en");
+
 				// Create changeset
 				const changesetId = await osmApi.createChangeset(i18n.changeset.editor, i18n.changeset.comment);
 
@@ -152,14 +164,6 @@ function sendDataToOSM() {
 
 					// Send back edited features into DB
 					if(editedElemIds.length > 0) {
-						function sleep(ms) {
-						return new Promise(resolve => setTimeout(resolve, ms));
-						}
-
-						console.log("go stop db");
-						await sleep(30000);
-						console.log("try back");
-
 						db.setContributionsSent(editedElemIds)
 						.then(() => {
 							console.log(`Updated ${editedElemIds.length} elements on OSM`);

@@ -1,0 +1,19 @@
+{
+    "status": {
+        "open": "ouvert pendant le confinement",
+        "closed": "fermé pendant le confinement"
+    },
+    "note": {
+        "header": "Signalement #covid19 #caresteouvert",
+        "name": "Nom",
+        "status": "État",
+        "details": "Détails",
+        "url": "URL",
+        "footer": "Pour corriger cette note, utilisez les tags opening_hours:covid19 et description:covid19 : https://wiki.openstreetmap.org/wiki/FR:Key:opening_hours:covid19",
+        "unknown": "Inconnu"
+    },
+    "changeset": {
+        "editor": "caresteouvert.fr",
+        "comment": "Ajout d'informations liées au confinement #covid19 #caresteouvert"
+    }
+}
