@@ -82,6 +82,8 @@ app.post("/contribute/:type/:id", (req, res) => {
 		}
 	}
 
+	const language = req.body.lang || 'en';
+
 	// Check other tags
 	let otherTags = null;
 
@@ -116,7 +118,7 @@ app.post("/contribute/:type/:id", (req, res) => {
 	}
 
 	// Save in database
-	return db.addContribution(osmid, name, req.body.state, opening_hours, details, req.body.lon, req.body.lat, otherTags)
+	return db.addContribution(osmid, name, req.body.state, opening_hours, details, req.body.lon, req.body.lat, otherTags, req.body.lang)
 	.then(() => res.send("OK"))
 	.catch(e => {
 		console.error(e);
