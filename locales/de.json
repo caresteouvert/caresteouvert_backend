@@ -1,0 +1,19 @@
+{
+    "status": {
+        "open": "weiterhin geöffnet",
+        "closed": "vorübergehend geschlossen"
+    },
+    "note": {
+        "header": "Hinweis #covid19 #caresteouvert",
+        "name": "Name",
+        "status": "Status",
+        "details": "Details",
+        "url": "URL",
+        "footer": "Erledige diesen Hinweis mit opening_hours:covid19 und description:covid19, siehe: https://wiki.openstreetmap.org/wiki/DE:Key:opening_hours:covid19",
+        "unknown": "Unbekannt"
+    },
+    "changeset": {
+        "editor": "caresteouvert.fr",
+        "comment": "Infos zu Ausgangsbeschränkungen #covid19 #caresteouvert"
+    }
+}

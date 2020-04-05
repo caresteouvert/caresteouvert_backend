@@ -3,17 +3,17 @@ global.btoa = str => Buffer.from(str, 'binary').toString('base64');
 
 const OsmRequest = require("osm-request");
 const db = require('./db');
-const i18n = require('./locales.json')[process.env.OSM_LANG || "fr"];
 
+const languageFallback = process.env.OSM_LANG || "fr";
 const delay = parseInt(process.env.DELAY_OSM) || 300000;
 let delayedContributionsSent = [];
 
 function getBestI18nAvailable(language) {
-	const i18n = require('./locales.json');
-	if (Object.keys(i18n).includes(language)) {
-		return i18n[language];
+	try {
+		return require(`../locales/${language}.json`);
+	} catch (e) {
+		return require(`../locales/${languageFallback}.json`);
 	}
-	return i18n[process.env.OSM_LANG || "fr"];
 }
 
 // Create OSM Request
