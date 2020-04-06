@@ -5,7 +5,7 @@
 const { Pool } = require('pg');
 
 // Create pool of connections
-let pool = new Pool({ connectionString: process.env.DATABASE_URL });
+let pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
 
 // Events
 pool.on('error', (err, client) => {
