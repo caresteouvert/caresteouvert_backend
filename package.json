@@ -4,7 +4,7 @@
   "description": "Back-end for Ça reste ouvert (caresteouvert.fr)",
   "main": "src/index.js",
   "engines": {
-    "node": "9"
+    "node": "10"
   },
   "scripts": {
     "start:api": "node src/index.js",
