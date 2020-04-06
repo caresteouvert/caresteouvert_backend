@@ -156,7 +156,18 @@ function sendDataToOSM() {
 							}
 						}
 						catch(e) {
-							console.error("Error with", contrib.osmid, ":", e);
+							// Check error code from OSM API
+							try {
+								const errorJson = JSON.parse(e.message);
+
+								// If element doesn't exist or has been deleted, marked as edited
+								if([404, 410].includes(errorJson.status)) {
+									editedElemIds.push(contrib.id);
+								}
+							}
+							catch(e2) {
+								console.error("Error with", contrib.osmid, ":", e);
+							}
 						}
 					}
 
