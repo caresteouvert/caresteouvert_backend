@@ -5,12 +5,24 @@
 const { Pool } = require('pg');
 
 // Create pool of connections
-let pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+let pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: (process.env.NOSSL == 1 ? undefined : { rejectUnauthorized: false }) });
 
 // Events
 pool.on('error', (err, client) => {
 	console.error("Database unavailable", err);
 });
+
+exports.getCountry = (lon, lat) => {
+	return pool.query("WITH u AS (SELECT ST_Transform(ST_SetSRID(ST_Point($1, $2), 4326), 3857) AS geom) SELECT COALESCE(c.sub_country, c.country_iso2) AS country FROM u JOIN countries_subcountries c ON u.geom && c.wkb_geometry AND ST_Intersects(u.geom, c.wkb_geometry)", [ lon, lat ])
+	.then(result => {
+		if(result.rows.length > 0) {
+			return result.rows[0].country;
+		}
+		else {
+			return null;
+		}
+	});
+};
 
 exports.addContribution = (osmid, name, status, opening_hours, details, lon, lat, tags, language) => {
 	return pool.query(

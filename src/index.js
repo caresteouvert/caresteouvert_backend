@@ -8,6 +8,8 @@ const compression = require("compression");
 const db = require('./db');
 const OpeningHoursBuilder = require("transport-hours/src/OpeningHoursBuilder");
 
+const RGX_COORDS = /^-?\d+(\.\d+)?$/;
+
 // Init API
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,6 +24,23 @@ app.use(express.json());
  */
 
 app.get('/', (req, res) => res.json({ "status": "OK" }));
+
+app.get('/country', (req, res) => {
+	if(!RGX_COORDS.test(req.query.lat)) {
+		return res.status(400).send("Invalid lat : "+req.query.lat);
+	}
+
+	if(!RGX_COORDS.test(req.query.lon)) {
+		return res.status(400).send("Invalid lon : "+req.query.lon);
+	}
+
+	return db.getCountry(req.query.lon, req.query.lat)
+	.then(result => res.send(result))
+	.catch(e => {
+		console.error(e);
+		res.status(500).send("An error happened when searching country");
+	});
+});
 
 app.post("/contribute/:type/:id", (req, res) => {
 	// Check OSM ID
@@ -57,12 +76,12 @@ app.post("/contribute/:type/:id", (req, res) => {
 	if(name.length === 0) { name = null; }
 
 	// Check lat
-	if(!/^-?\d+(\.\d+)?$/.test(req.body.lat)) {
+	if(!RGX_COORDS.test(req.body.lat)) {
 		return res.status(400).send("Invalid lat : "+req.body.lat);
 	}
 
 	// Check lon
-	if(!/^-?\d+(\.\d+)?$/.test(req.body.lon)) {
+	if(!RGX_COORDS.test(req.body.lon)) {
 		return res.status(400).send("Invalid lon : "+req.body.lon);
 	}
 
