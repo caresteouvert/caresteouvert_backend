@@ -42,7 +42,7 @@ function sendNotesToOSM() {
 
 				const i18n = getBestI18nAvailable(note.language);
 
-				const text = `${i18n.note.header}
+				const text = `${i18n.note.header.replace(/{HASHTAG_COUNTRY}/g, note.country ? "#"+note.country : "").trim()}
 
 ${i18n.note.name} : ${note.name || i18n.note.unknown}
 ${i18n.note.url} : ${process.env.OSM_API_URL}/${note.osmid}

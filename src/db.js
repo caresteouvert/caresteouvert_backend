@@ -37,7 +37,19 @@ exports.getContributionsForUpload = () => {
 };
 
 exports.getContributionsForNotes = () => {
-	return pool.query("SELECT id, osmid, name, status, opening_hours, details, tags, ST_X(geom) AS lon, ST_Y(geom) AS lat, language FROM contributions WHERE NOT sent_to_osm AND details IS NOT NULL AND status IN ('open', 'closed') LIMIT 100")
+	return pool.query(
+`SELECT
+	c.id, c.osmid, c.name, c.status, c.opening_hours,
+	c.details, c.tags, ST_X(c.geom) AS lon, ST_Y(c.geom) AS lat,
+	c.language, sc.country_iso2 AS country
+FROM (
+	SELECT *, ST_Transform(geom, 3857) AS geom3857
+	FROM contributions
+	WHERE NOT sent_to_osm AND details IS NOT NULL AND status IN ('open', 'closed')
+	LIMIT 100
+) c
+LEFT JOIN countries_subcountries sc ON sc.wkb_geometry && c.geom3857 AND ST_Intersects(sc.wkb_geometry, c.geom3857)`
+	)
 	.then(result => (result && result.rows && result.rows.length > 0) ? result.rows : []);
 };
 

@@ -4,7 +4,7 @@
         "closed": "fermé pendant le confinement"
     },
     "note": {
-        "header": "Signalement #covid19 #caresteouvert",
+        "header": "Signalement #covid19 #caresteouvert {HASHTAG_COUNTRY}",
         "name": "Nom",
         "status": "État",
         "details": "Détails",

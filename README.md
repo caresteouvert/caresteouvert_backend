@@ -7,6 +7,7 @@ Requires :
 * NodeJS >= 9
 * PostgreSQL >= 10
 * PostGIS >= 2.5
+* A properly initialized [Ça reste ouvert](https://github.com/osmontrouge/caresteouvert) database (with `countries_subcountries` table)
 
 Then run these commands :
 

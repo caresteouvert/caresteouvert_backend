@@ -4,7 +4,7 @@
         "closed": "closed during lockdown"
     },
     "note": {
-        "header": "Note #covid19 #caresteouvert",
+        "header": "Note #covid19 #caresteouvert {HASHTAG_COUNTRY}",
         "name": "Name",
         "status": "Status",
         "details": "Details",

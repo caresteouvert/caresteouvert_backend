@@ -4,7 +4,7 @@
         "closed": "vorübergehend geschlossen"
     },
     "note": {
-        "header": "Hinweis #covid19 #caresteouvert",
+        "header": "Hinweis #covid19 #caresteouvert {HASHTAG_COUNTRY}",
         "name": "Name",
         "status": "Status",
         "details": "Details",
