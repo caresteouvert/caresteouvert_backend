@@ -31,6 +31,26 @@ npm run start:osm # Launch OSM data sending process
 * `OSM_LANG` : language used for OpenStreetMap notes and changesets (code used in `src/locales.json`)
 
 
+## Docker
+
+The back-end can be deployed using Docker. It consists of three containers:
+
+* `db` – a PostgreSQL database to hold contributions ([docker/db/Dockerfile](./docker/db/Dockerfile)),
+* `web` – a web server to accept contributions and insert them into the database ([docker/web/Dockerfile](./docker/web/Dockerfile)),
+* `worker` – a worker to relay contributions to OSM as changesets and notes ([docker/worker/Dockerfile](./docker/worker/Dockerfile)).
+
+To deploy using Docker Compose:
+
+1. Copy `env.example` to `.env` and set environment variables.
+2. Run `docker-compose up` to build and run the containers.
+3. Open http://localhost:8080/ to check that it returns `{"status":"OK"}`.
+
+Notes:
+
+* On the first run, the database will be created automatically. It is a known issue that the worker fails in this case, because it tries to access the database before it exists.
+* To reset the database, run `docker-compose down --volumes`.
+
+
 ## License
 
 Copyright (c) "Ça reste ouvert" 2020
