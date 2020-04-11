@@ -26,12 +26,11 @@ services:
   worker:
     build:
         context: .
-        dockerfile: docker/web/Dockerfile
+        dockerfile: docker/worker/Dockerfile
     depends_on:
         - db
     environment:
         <<: *common-environment
-    entrypoint: ["npm", "run", "start:osm"]
     restart: always
   db:
     build:
