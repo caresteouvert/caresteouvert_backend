@@ -1,0 +1,52 @@
+version: '3.7'
+
+x-common-environment: &common-environment
+    DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-mydb}
+    DELAY_OSM: ${DELAY_OSM:-}
+    OSM_API_URL: ${OSM_API_URL:-}
+    OSM_API_KEY: ${OSM_API_KEY:-}
+    OSM_API_SECRET: ${OSM_API_SECRET:-}
+    OSM_USER: ${OSM_USER:-}
+    OSM_PASS: ${OSM_PASS:-}
+    OSM_LANG: ${OSM_LANG:-}
+
+services:
+  web:
+    build:
+        context: .
+        dockerfile: docker/web/Dockerfile
+    depends_on:
+        - db
+    environment:
+        <<: *common-environment
+        PORT: ${WEB_PORT:-8080}
+    ports:
+        - "${WEB_PORT:-8080}:${WEB_PORT:-8080}"
+    restart: always
+  worker:
+    build:
+        context: .
+        dockerfile: docker/web/Dockerfile
+    depends_on:
+        - db
+    environment:
+        <<: *common-environment
+    entrypoint: ["npm", "run", "start:osm"]
+    restart: always
+  db:
+    build:
+        context: .
+        dockerfile: docker/db/Dockerfile
+    volumes:
+        - pgdata:/data/postgres
+    environment:
+        POSTGRES_USER: ${POSTGRES_USER:-postgres}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+        POSTGRES_DB: ${POSTGRES_DB:-mydb}
+        PGDATA: /data/postgres
+    ports:
+        - "5432:5432"
+    restart: always
+
+volumes:
+    pgdata:
