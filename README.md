@@ -51,6 +51,10 @@ Notes:
 * On the first run, the database will be created automatically. It is a known issue that the worker fails in this case, because it tries to access the database before it exists.
 * To reset the database, run `docker-compose down --volumes`.
 
+## Translation
+
+Content managed by backend [can be translated on Transifex](https://www.transifex.com/openlevelup/ca-reste-ouvert-backend/).
+
 
 ## License
 
