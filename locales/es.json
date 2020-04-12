@@ -1,0 +1,19 @@
+{
+    "status": {
+        "open": "Abierto durante el Estado de Alarma",
+        "closed": "Cerrado durante el Estado de Alarma"
+    },
+    "note": {
+        "header": "Nota #covid19 #caresteouvert {HASHTAG_COUNTRY}",
+        "name": "Nombre",
+        "status": "Estado",
+        "details": "Detalles",
+        "url": "URL",
+        "footer": "Para corregir esta nota, usa opening_hours:covid19 and description:covid19 : https://wiki.openstreetmap.org/wiki/ES:Key:opening_hours:covid19",
+        "unknown": "Desconocido"
+    },
+    "changeset": {
+        "editor": "http://sigueabierto.openstreetmap.es/",
+        "comment": "Información sobre Estado de Alarma #covid19 #caresteouvert"
+    }
+}
