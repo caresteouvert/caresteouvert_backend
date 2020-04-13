@@ -53,7 +53,7 @@ function sendNotesToOSM() {
 					ohtext = "opening_hours:covid19=off";
 				}
 
-				const text = `${i18n.note.header.replace(/{HASHTAG_COUNTRY}/g, note.country ? "#caresteouvert_"+note.country : "").trim()}
+				const text = `${i18n.note.header.replace(/{HASHTAG_COUNTRY}/g, note.country ? "#caresteouvert"+note.country : "").trim()}
 
 ${i18n.note.name} : ${note.name || i18n.note.unknown}
 ${i18n.note.url} : ${process.env.OSM_API_URL}/${note.osmid}
