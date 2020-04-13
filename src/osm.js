@@ -42,6 +42,17 @@ function sendNotesToOSM() {
 
 				const i18n = getBestI18nAvailable(note.language);
 
+				let ohtext = null;
+				if(note.opening_hours) {
+					ohtext = "opening_hours:covid19=" + note.opening_hours;
+				}
+				else if(note.status === "open") {
+					ohtext = "opening_hours:covid19=open";
+				}
+				else {
+					ohtext = "opening_hours:covid19=off";
+				}
+
 				const text = `${i18n.note.header.replace(/{HASHTAG_COUNTRY}/g, note.country ? "#caresteouvert_"+note.country : "").trim()}
 
 ${i18n.note.name} : ${note.name || i18n.note.unknown}
@@ -49,7 +60,7 @@ ${i18n.note.url} : ${process.env.OSM_API_URL}/${note.osmid}
 
 ${i18n.note.status} : ${i18n.status[note.status]}
 ${note.details ? (i18n.note.details + " : " + note.details + "\n") : ""}
-${note.opening_hours ? ("opening_hours:covid19=" + note.opening_hours) : ""}
+${ohtext}
 ${note.tags ? (Object.entries(note.tags).map(e => e.join("=")).join("\n")+"\n") : ""}
 ${i18n.note.footer}`;
 
