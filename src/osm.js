@@ -55,11 +55,11 @@ function sendNotesToOSM() {
 
 				const text = `${i18n.note.header.replace(/{HASHTAG_COUNTRY}/g, note.country ? "#caresteouvert"+note.country : "").trim()}
 
-${i18n.note.name} : ${note.name || i18n.note.unknown}
-${i18n.note.url} : ${process.env.OSM_API_URL}/${note.osmid}
+${i18n.note.name} ${note.name || i18n.note.unknown}
+${i18n.note.url} ${process.env.OSM_API_URL}/${note.osmid}
 
-${i18n.note.status} : ${i18n.status[note.status]}
-${note.details ? (i18n.note.details + " : " + note.details + "\n") : ""}
+${i18n.note.status} ${i18n.status[note.status]}
+${note.details ? (i18n.note.details + " " + note.details + "\n") : ""}
 ${ohtext}
 ${note.tags ? (Object.entries(note.tags).map(e => e.join("=")).join("\n")+"\n") : ""}
 ${i18n.note.footer}`;
