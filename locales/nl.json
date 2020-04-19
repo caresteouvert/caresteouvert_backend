@@ -5,10 +5,10 @@
     },
     "note": {
         "header": "Notitie #covid19 #hetblijftopen {HASHTAG_COUNTRY}",
-        "name": "Naam",
-        "status": "Status",
-        "details": "Details",
-        "url": "URL",
+        "name": "Naam:",
+        "status": "Status:",
+        "details": "Details:",
+        "url": "URL:",
         "footer": "Om deze notitie op te lossen, gebruik opening_hours:covid19 en description:covid19 : https://wiki.openstreetmap.org/wiki/Key:opening_hours:covid19",
         "unknown": "Onbekend"
     },

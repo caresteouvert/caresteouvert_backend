@@ -5,10 +5,10 @@
     },
     "note": {
         "header": "Note #covid19 #caresteouvert {HASHTAG_COUNTRY}",
-        "name": "Name",
-        "status": "Status",
-        "details": "Details",
-        "url": "URL",
+        "name": "Name:",
+        "status": "Status:",
+        "details": "Details:",
+        "url": "URL:",
         "footer": "To fix this note, use opening_hours:covid19 and description:covid19 : https://wiki.openstreetmap.org/wiki/Key:opening_hours:covid19",
         "unknown": "Unknown"
     },
