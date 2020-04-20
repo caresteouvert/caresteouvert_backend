@@ -1,0 +1,19 @@
+{
+    "status": {
+        "open": "bukas habang may kuwarentenas",
+        "closed": "sarado habang may kuwarentenas"
+    },
+    "note": {
+        "header": "Puná #covid19ph #covid19 #caresteouvert {HASHTAG_COUNTRY}",
+        "name": "Pangalan:",
+        "status": "Kalagayan:",
+        "details": "Detalye:",
+        "url": "URL:",
+        "footer": "Upang ayusin ang punáng ito, gamitin ang mga tags na opening_hours:covid19 at description:covid19 : https://wiki.openstreetmap.org/wiki/Key:opening_hours:covid19",
+        "unknown": "Lingíd"
+    },
+    "changeset": {
+        "editor": "caresteouvert.fr",
+        "comment": "Pabatid hinggíl sa kuwarentenas #covid19 #caresteouvert"
+    }
+}
