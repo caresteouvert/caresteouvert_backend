@@ -1,0 +1,19 @@
+{
+    "status": {
+        "open": "avoinna rajoitusten aikana",
+        "closed": "suljettu rajoitusten aikana"
+    },
+    "note": {
+        "header": "Huomautus #covid19 #caresteouvert {HASHTAG_COUNTRY}",
+        "name": "Nimi:",
+        "status": "Status:",
+        "details": "Lisätietoja:",
+        "url": "URL:",
+        "footer": "Käytä tämän huomautuksen korjauksessa opening_hours:covid19 ja description:covid19 : https://wiki.openstreetmap.org/wiki/Koronavirus_2019",
+        "unknown": "Tuntematon"
+    },
+    "changeset": {
+        "editor": "caresteouvert.fr",
+        "comment": "Tietoja rajoituksista #covid19 #caresteouvert"
+    }
+}
