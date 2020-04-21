@@ -1,0 +1,19 @@
+{
+    "status": {
+        "open": "Itxialdi garaian irekita",
+        "closed": "Itxialdi garaian itxita"
+    },
+    "note": {
+        "header": "Oharra #covid19 #caresteouvert {HASHTAG_COUNTRY}",
+        "name": "Izena:",
+        "status": "Egoera:",
+        "details": "Xehetasunak:",
+        "url": "URL:",
+        "footer": "Ohar hau zuzentzeko, erabili opening_hours:covid19 and description:covid19 : https://wiki.openstreetmap.org/wiki/Key:opening_hours:covid19",
+        "unknown": "Ezezaguna"
+    },
+    "changeset": {
+        "editor": "caresteouvert.fr",
+        "comment": "Itxialdiari buruzko informazioa #covid19 #caresteouvert"
+    }
+}
