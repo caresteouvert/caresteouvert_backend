@@ -104,6 +104,93 @@ ${i18n.note.footer}`;
 	});
 }
 
+/**
+ * Handles a single changeset (used for cluster separating)
+ */
+function prepareSendChangeset(contribs) {
+	return new Promise(async resolve => {
+		const i18n = getBestI18nAvailable("en");
+
+		// Create changeset
+		const changesetId = await osmApi.createChangeset(i18n.changeset.editor, i18n.changeset.comment);
+
+		if(changesetId) {
+			// Go through all edited features
+			const editedElemIds = [];
+			for(let contrib of contribs) {
+				try {
+					let elem = await osmApi.fetchElement(contrib.osmid);
+
+					if(elem) {
+						// Define tags
+						const tags = contrib.tags ? contrib.tags : {};
+
+						if(contrib.details && contrib.details.trim().length > 0) {
+							tags["description:covid19"] = contrib.details.trim();
+						}
+
+						if(contrib.status === "open") {
+							tags["opening_hours:covid19"] = contrib.opening_hours || "open";
+						}
+						else if(contrib.status === "closed") {
+							tags["opening_hours:covid19"] = "off";
+						}
+
+						// Send to API
+						elem = osmApi.setTags(elem, tags);
+						elem = osmApi.setTimestampToNow(elem);
+						const result = await osmApi.sendElement(elem, changesetId);
+
+						if(result) {
+							editedElemIds.push(contrib.id);
+						}
+						else {
+							console.error("Failed to update OSM element", contrib.osmid);
+						}
+					}
+				}
+				catch(e) {
+					// Check error code from OSM API
+					try {
+						const errorJson = JSON.parse(e.message);
+
+						// If element doesn't exist or has been deleted, marked as edited
+						if([404, 410].includes(errorJson.status)) {
+							editedElemIds.push(contrib.id);
+						}
+					}
+					catch(e2) {
+						console.error("Error with", contrib.osmid, ":", e);
+					}
+				}
+			}
+
+			osmApi.closeChangeset(changesetId);
+
+			// Send back edited features into DB
+			if(editedElemIds.length > 0) {
+				db.setContributionsSent(editedElemIds)
+				.then(() => {
+					console.log(`Updated ${editedElemIds.length} elements on OSM`);
+					resolve();
+				})
+				.catch(e => {
+					delayedContributionsSent = delayedContributionsSent.concat(editedElemIds);
+					console.error(e);
+					resolve();
+				});
+			}
+			else {
+				resolve();
+			}
+		}
+		else {
+			console.error("Can't create changeset");
+			resolve();
+		}
+	});
+}
+
 // Automatic check for sending updates
 function sendDataToOSM() {
 	const afterAll = () => {
@@ -126,85 +213,17 @@ function sendDataToOSM() {
 		db.getContributionsForUpload()
 		.then(async contribs => {
 			if(contribs.length > 0) {
-				const i18n = getBestI18nAvailable("en");
-
-				// Create changeset
-				const changesetId = await osmApi.createChangeset(i18n.changeset.editor, i18n.changeset.comment);
-
-				if(changesetId) {
-					// Go through all edited features
-					const editedElemIds = [];
-					for(let contrib of contribs) {
-						try {
-							let elem = await osmApi.fetchElement(contrib.osmid);
-
-							if(elem) {
-								// Define tags
-								const tags = contrib.tags ? contrib.tags : {};
-
-								if(contrib.details && contrib.details.trim().length > 0) {
-									tags["description:covid19"] = contrib.details.trim();
-								}
-
-								if(contrib.status === "open") {
-									tags["opening_hours:covid19"] = contrib.opening_hours || "open";
-								}
-								else if(contrib.status === "closed") {
-									tags["opening_hours:covid19"] = "off";
-								}
-
-								// Send to API
-								elem = osmApi.setTags(elem, tags);
-								elem = osmApi.setTimestampToNow(elem);
-								const result = await osmApi.sendElement(elem, changesetId);
-
-								if(result) {
-									editedElemIds.push(contrib.id);
-								}
-								else {
-									console.error("Failed to update OSM element", contrib.osmid);
-								}
-							}
-						}
-						catch(e) {
-							// Check error code from OSM API
-							try {
-								const errorJson = JSON.parse(e.message);
-
-								// If element doesn't exist or has been deleted, marked as edited
-								if([404, 410].includes(errorJson.status)) {
-									editedElemIds.push(contrib.id);
-								}
-							}
-							catch(e2) {
-								console.error("Error with", contrib.osmid, ":", e);
-							}
-						}
-					}
-
-					osmApi.closeChangeset(changesetId);
-
-					// Send back edited features into DB
-					if(editedElemIds.length > 0) {
-						db.setContributionsSent(editedElemIds)
-						.then(() => {
-							console.log(`Updated ${editedElemIds.length} elements on OSM`);
-							afterAll();
-						})
-						.catch(e => {
-							delayedContributionsSent = delayedContributionsSent.concat(editedElemIds);
-							console.error(e);
-							afterAll();
-						});
+				console.log("Will send", contribs.length, "changesets");
+				const handleNext = () => {
+					if(contribs.length > 0) {
+						prepareSendChangeset(contribs.pop())
+						.then(() => handleNext());
 					}
 					else {
 						afterAll();
 					}
-				}
-				else {
-					console.error("Can't create changeset");
-					afterAll();
-				}
+				};
+				handleNext();
 			}
 			else {
 				afterAll();
