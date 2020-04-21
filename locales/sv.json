@@ -1,0 +1,19 @@
+{
+    "status": {
+        "open": "Öppen under nedstängningen",
+        "closed": "Stängd under nedstängningen"
+    },
+    "note": {
+        "header": "Observation #covid19 #caresteouvert {HASHTAG_COUNTRY}",
+        "name": "Namn:",
+        "status": "Status:",
+        "details": "Ytterligare information:",
+        "url": "URL:",
+        "footer": "För att fixa denna observation använd opening_hours:covid19 och description:covid19 : https://wiki.openstreetmap.org/wiki/Koronavirus_2019 ",
+        "unknown": "Okänd"
+    },
+    "changeset": {
+        "editor": "caresteouvert.fr",
+        "comment": "Information angående begränsningarna #covid19 #caresteouvert"
+    }
+}
