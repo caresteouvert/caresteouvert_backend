@@ -1,0 +1,19 @@
+{
+    "status": {
+        "open": "digor e-pad an enkaeañ",
+        "closed": "serr e-pad an enkaeañ"
+    },
+    "note": {
+        "header": "Notenn #covid19 #caresteouvert {HASHTAG_COUNTRY}",
+        "name": "Anv:",
+        "status": "Stad:",
+        "details": "Munudoù:",
+        "url": "URL:",
+        "footer": "Evit reizhañ an notenn-mañ, implijit opening_hours:covid19 ha description:covid19 : https://wiki.openstreetmap.org/wiki/Key:opening_hours:covid19",
+        "unknown": "Dianav"
+    },
+    "changeset": {
+        "editor": "caresteouvert.fr",
+        "comment": "Titouroù a-zivout an enkaeañ #covid19 #caresteouvert"
+    }
+}
