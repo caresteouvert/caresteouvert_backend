@@ -150,7 +150,7 @@ app.post("/contribute/:type/:id", (req, res) => {
 	}
 
 	// Save in database
-	const promises = [ db.addContribution(osmid, name, req.body.state, opening_hours, details, req.body.lon, req.body.lat, otherTags, req.body.lang) ];
+	const promises = [ db.addContribution(osmid, name, req.body.state, opening_hours, details, req.body.lon, req.body.lat, otherTags, croTags, req.body.lang) ];
 	if(croTags) {
 		promises.push(db.saveCroPoi(osmid, croTags));
 	}

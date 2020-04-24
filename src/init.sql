@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS contributions(
 	details VARCHAR,
 	language VARCHAR,
 	tags JSONB,
+	cro_tags JSONB,
 	geom GEOMETRY(Point, 4326) NOT NULL
 );
 
