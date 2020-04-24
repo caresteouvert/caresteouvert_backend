@@ -13,3 +13,9 @@ CREATE TABLE IF NOT EXISTS contributions(
 	tags JSONB,
 	geom GEOMETRY(Point, 4326) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS poi_cro(
+	osmid VARCHAR PRIMARY KEY,
+	tags JSONB,
+	lastupdate TIMESTAMP NOT NULL DEFAULT current_timestamp
+);

@@ -31,6 +31,14 @@ exports.addContribution = (osmid, name, status, opening_hours, details, lon, lat
 	);
 };
 
+exports.saveCroPoi = (osmid, tags) => {
+	const fid = osmid.split("/").map((p,i) => i === 0 ? p.substring(0, 1) : p).join("");
+	return pool.query(
+		"INSERT INTO poi_cro (osmid, tags) VALUES ($1, $2) ON CONFLICT (osmid) DO UPDATE SET tags = poi_cro.tags || EXCLUDED.tags, lastupdate = current_timestamp WHERE poi_cro.osmid = EXCLUDED.osmid",
+		[ fid, tags ]
+	);
+};
+
 exports.getContributionsForUpload = () => {
 	return pool.query("SELECT id, osmid, status, opening_hours, tags, language, ST_ClusterDBSCAN(geom, eps := 2, minpoints := 1) OVER () AS cluster FROM contributions WHERE NOT sent_to_osm AND details IS NULL AND status IN ('open', 'closed') LIMIT 1000")
 	.then(result => {

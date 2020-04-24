@@ -105,6 +105,7 @@ app.post("/contribute/:type/:id", (req, res) => {
 
 	// Check other tags
 	let otherTags = null;
+	let croTags = null;
 
 	if(req.body.tags) {
 		if(
@@ -130,6 +131,18 @@ app.post("/contribute/:type/:id", (req, res) => {
 				delete otherTags.opening_hours;
 			}
 
+			// Find "Ça reste ouvert" custom tags
+			Object.keys(otherTags)
+			.filter(k => k.startsWith("cro:"))
+			.forEach(k => {
+				if(!croTags) {
+					croTags = {};
+				}
+				croTags[k.substring(4)] = otherTags[k];
+				delete otherTags[k];
+			});
+
+			// Clean-up otherTags if empty
 			if(Object.keys(otherTags).length === 0) {
 				otherTags = null;
 			}
@@ -137,7 +150,12 @@ app.post("/contribute/:type/:id", (req, res) => {
 	}
 
 	// Save in database
-	return db.addContribution(osmid, name, req.body.state, opening_hours, details, req.body.lon, req.body.lat, otherTags, req.body.lang)
+	const promises = [ db.addContribution(osmid, name, req.body.state, opening_hours, details, req.body.lon, req.body.lat, otherTags, req.body.lang) ];
+	if(croTags) {
+		promises.push(db.saveCroPoi(osmid, croTags));
+	}
+
+	return Promise.all(promises)
 	.then(() => res.send("OK"))
 	.catch(e => {
 		console.error(e);
