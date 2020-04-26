@@ -31,6 +31,14 @@ exports.addContribution = (osmid, name, status, opening_hours, details, lon, lat
 	);
 };
 
+exports.addContributionCro = (osmid, name, details, lon, lat, croTags, language) => {
+	return pool.query(
+		`INSERT INTO contributions (sent_to_osm, osmid, name, status, details, geom, cro_tags, language)
+		VALUES (TRUE, $1, $2, 'same', $3, ST_SetSRID(ST_Point($4, $5), 4326), $6, $7)`,
+		[ osmid, name, details, lon, lat, croTags, language]
+	);
+};
+
 exports.saveCroPoi = (osmid, tags) => {
 	const fid = osmid.split("/").map((p,i) => i === 0 ? p.substring(0, 1) : p).join("");
 	return pool.query(

@@ -163,6 +163,77 @@ app.post("/contribute/:type/:id", (req, res) => {
 	});
 });
 
+app.post("/contribute/:type/:id/custom", (req, res) => {
+	// Check OSM ID
+	if(!["node", "way", "relation"].includes(req.params.type)) {
+		return res.status(400).send("Invalid type : "+req.params.type);
+	}
+
+	if(!/^\d+$/.test(req.params.id)) {
+		return res.status(400).send("Invalid ID : "+req.params.id);
+	}
+
+	const osmid = req.params.type + "/" + req.params.id;
+
+	// Check details
+	if(!(req.body.details === null || req.body.details === undefined || typeof req.body.details === "string")) {
+		return res.status(400).send("Invalid details : "+req.body.details);
+	}
+
+	let details = (req.body.details || "").trim();
+	if(details.length === 0) { details = null; }
+
+	// Check name
+	if(!(req.body.name === null || req.body.name === undefined || typeof req.body.name === "string")) {
+		return res.status(400).send("Invalid name : "+req.body.name);
+	}
+
+	let name = (req.body.name || "").trim();
+	if(name.length === 0) { name = null; }
+
+	// Check lat
+	if(!RGX_COORDS.test(req.body.lat)) {
+		return res.status(400).send("Invalid lat : "+req.body.lat);
+	}
+
+	// Check lon
+	if(!RGX_COORDS.test(req.body.lon)) {
+		return res.status(400).send("Invalid lon : "+req.body.lon);
+	}
+
+	const language = req.body.lang || 'en';
+
+	// Check other tags
+	let croTags = null;
+
+	if(
+		typeof req.body.tags !== "object"
+		|| Object.entries(req.body.tags).length === 0
+		|| Object.entries(req.body.tags).find(e => (
+			typeof e[0] !== "string"
+			|| typeof e[1] !== "string"
+			|| e[0].trim().length === 0
+			|| e[1].trim().length === 0
+		))
+	) {
+		return res.status(400).send("Invalid tags : "+req.body.tags);
+	}
+	else {
+		croTags = req.body.tags;
+	}
+
+	// Save in database
+	return Promise.all([
+		db.addContributionCro(osmid, name, details, req.body.lon, req.body.lat, croTags, req.body.lang),
+		db.saveCroPoi(osmid, croTags)
+	])
+	.then(() => res.send("OK"))
+	.catch(e => {
+		console.error(e);
+		res.status(500).send("An error happened when saving contribution");
+	});
+});
+
 // 404
 app.use((req, res) => {
 	res.status(404).send(req.originalUrl + ' not found')
