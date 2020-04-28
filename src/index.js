@@ -13,14 +13,14 @@ const RGX_COORDS = /^-?\d+(\.\d+)?$/;
 
 // Init API
 const app = express();
-
-app.use('/directory', apiRoutes);
-
-const port = process.env.PORT || 3000;
 app.use(cors());
 app.options('*', cors());
 app.use(compression());
 app.use(express.json());
+
+app.use('/directory', apiRoutes);
+
+const port = process.env.PORT || 3000;
 
 /*
  * List of routes
