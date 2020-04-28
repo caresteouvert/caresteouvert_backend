@@ -6,18 +6,21 @@ const express = require('express');
 const cors = require('cors');
 const compression = require("compression");
 const db = require('./db');
+const apiRoutes = require('./directory/api-routes');
 const OpeningHoursBuilder = require("transport-hours/src/OpeningHoursBuilder");
 
 const RGX_COORDS = /^-?\d+(\.\d+)?$/;
 
 // Init API
 const app = express();
+
+app.use('/directory', apiRoutes);
+
 const port = process.env.PORT || 3000;
 app.use(cors());
 app.options('*', cors());
 app.use(compression());
 app.use(express.json());
-
 
 /*
  * List of routes
