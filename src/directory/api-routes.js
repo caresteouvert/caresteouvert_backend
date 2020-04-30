@@ -24,7 +24,7 @@ router.get(`/`, function (req, res) {
                 links: [
                     link(req.originalUrl, 'directory.regions.title'),
                 ],
-                regions: regs.map(reg => {
+                data: regs.map(reg => {
                     return {
                         type: 'directory.regions.type',
                         id: reg.reg,
@@ -45,7 +45,7 @@ router.get(`/:reg`, function (req, res) {
             links: [
                 link(req.originalUrl, 'directory.departements.title'),
             ],
-            departements: deps.map(dep => {
+            data: deps.map(dep => {
                 return {
                     type: 'directory.departements.type',
                     id: dep.dep,
@@ -65,7 +65,7 @@ router.get(`/:reg/:dep`, function (req, res) {
             links: [
                 link(req.originalUrl, 'directory.communes.title'),
             ],
-            communes: coms.map(com => {
+            data: coms.map(com => {
                 return {
                     type: 'directory.communes.type',
                     id: com.com,
@@ -86,7 +86,7 @@ router.get(`/:reg/:dep/:com`, function (req, res) {
             links: [
                 link(req.originalUrl, 'directory.categories.title'),
             ],
-            categories: cats.map(cat => {
+            data: cats.map(cat => {
                 return {
                     type: 'directory.categories.type',
                     id: cat,
@@ -126,7 +126,7 @@ router.get(`/:reg/:dep/:com/:category`, function (req, res) {
                     link(req.originalUrl, 'directory.pois.title'),
                     navigationForPage(req.originalUrl, page, pois.length)
                 ),
-                pois: pois.map(poi => {
+                data: pois.map(poi => {
                     return {
                         type: 'directory.pois.type',
                         id: poi.fid,
