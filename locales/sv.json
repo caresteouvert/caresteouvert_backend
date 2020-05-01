@@ -1,7 +1,7 @@
 {
     "status": {
-        "open": "Öppen under nedstängningen",
-        "closed": "Stängd under nedstängningen"
+        "open": "Öppen under undantagstillståndet",
+        "closed": "Stängd under undantagstillståndet"
     },
     "note": {
         "header": "Observation #covid19 #caresteouvert {HASHTAG_COUNTRY}",
@@ -14,6 +14,6 @@
     },
     "changeset": {
         "editor": "caresteouvert.fr",
-        "comment": "Information angående begränsningarna #covid19 #caresteouvert"
+        "comment": "Information angående undantagstillståndet #covid19 #caresteouvert"
     }
 }
