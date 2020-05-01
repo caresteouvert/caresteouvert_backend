@@ -1,10 +1,10 @@
 {
     "status": {
         "open": "weiterhin geöffnet",
-        "closed": "vorübergehend geschlossen"
+        "closed": "derzeit geschlossen"
     },
     "note": {
-        "header": "Hinweis #covid19 #caresteouvert {HASHTAG_COUNTRY}",
+        "header": "Hinweis #bleibtoffen #caresteouvert {HASHTAG_COUNTRY}",
         "name": "Name:",
         "status": "Status:",
         "details": "Details:",
@@ -13,7 +13,7 @@
         "unknown": "Unbekannt"
     },
     "changeset": {
-        "editor": "caresteouvert.fr",
+        "editor": "bleibtoffen.org",
         "comment": "Infos zu Ausgangsbeschränkungen #covid19 #caresteouvert"
     }
 }
