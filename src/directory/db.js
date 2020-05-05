@@ -34,7 +34,7 @@ const queries = {
     pois_by_com_and_cat: (category, com, count, offset) => {
         return {
             name: 'pois_by_category_and_com',
-            text: 'SELECT ' + columns.join(columns.poi, columns.com, columns.dep, columns.reg) +
+            text: 'SELECT ' + columns.join(columns.poi, columns.poiExtended, columns.poiLocation, columns.com, columns.dep, columns.reg) +
                 '  FROM cog_commune com' +
                 '  JOIN cog_departement dep ON com.dep=dep.dep' +
                 '  JOIN cog_region reg ON reg.reg=com.reg' +
