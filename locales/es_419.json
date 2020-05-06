@@ -1,0 +1,19 @@
+{
+    "status": {
+        "open": "abierto durante la cuarentena",
+        "closed": "cerrado durante la cuarentena"
+    },
+    "note": {
+        "header": "Nota #covid19 #caresteouvert {HASHTAG_COUNTRY}",
+        "name": "Nombre:",
+        "status": "Estado:",
+        "details": "Detalles:",
+        "url": "URL:",
+        "footer": "Para corregir esta nota, usa opening_hours:covid19 y description:covid19: https://wiki.openstreetmap.org/wiki/ES:Key:opening_hours:covid19",
+        "unknown": "Desconocido"
+    },
+    "changeset": {
+        "editor": "caresteouvert.fr",
+        "comment": "Información sobr ela cuarentena #covid19 #caresteouvert"
+    }
+}
