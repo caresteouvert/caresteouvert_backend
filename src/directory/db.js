@@ -27,10 +27,6 @@ const columns = {
 }
 
 const queries = {
-    categories: {
-        name: 'categories',
-        text: 'SELECT DISTINCT(normalized_cat) FROM poi_osm'
-    },
     pois_by_com_and_cat: (category, com, count, offset) => {
         return {
             name: 'pois_by_category_and_com',
@@ -94,11 +90,6 @@ const queries = {
 }
 
 module.exports = {
-    listNormalizedCat: () => {
-        const query = queries.categories;
-        return pgPool.query(query)
-            .then(res => res.rows.map((row => row[normalizedCatColumn])));
-    },
     listPoisByCat: (cat, count, page) => {
         const offset = count * page;
         const query = queries.pois_by_cat(cat, count, offset);

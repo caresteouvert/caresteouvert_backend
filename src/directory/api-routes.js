@@ -77,27 +77,6 @@ router.get(`/:reg/:dep`, function (req, res) {
 });
 
 /**
- * route to categories
- */
-router.get(`/:reg/:dep/:com`, function (req, res) {
-    const com = req.params['com'];
-    db.listNormalizedCat()
-        .then(cats => res.json({
-            links: [
-                link(req.originalUrl, 'directory.categories.title'),
-            ],
-            data: cats.map(cat => {
-                return {
-                    type: 'directory.categories.type',
-                    id: cat,
-                    properties: cat,
-                    links: link(`${req.originalUrl}/${cat}`, 'directory.categories.link.pois'),
-                };
-            })
-        })).catch(err => errorHandler(err, res));
-});
-
-/**
  * route to category page: POIs list
  */
 router.get(`/:reg/:dep/:com/:category`, function (req, res) {
