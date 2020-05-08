@@ -29,7 +29,7 @@ router.get(`/`, function (req, res) {
                         type: 'directory.regions.type',
                         id: reg.reg,
                         properties: reg,
-                        links: link(`${req.baseUrl}/${reg.libelle}`, 'directory.regions.link.departements'),
+                        links: link(`${req.baseUrl}/${reg.libelle}/`, 'directory.regions.link.departements'),
                     };
                 })
             })
@@ -50,7 +50,7 @@ router.get(`/:reg`, function (req, res) {
                     type: 'directory.departements.type',
                     id: dep.dep,
                     properties: dep,
-                    links: link(`${req.originalUrl}/${dep.libelle}`, 'directory.departements.link.communes'),
+                    links: link(`${req.originalUrl}/${dep.libelle}/`, 'directory.departements.link.communes'),
                 };
             })
         })).catch(err => errorHandler(err, res));
@@ -70,7 +70,7 @@ router.get(`/:reg/:dep`, function (req, res) {
                     type: 'directory.communes.type',
                     id: com.com,
                     properties: com,
-                    links: link(`${req.originalUrl}/${com.libelle}`, 'directory.communes.link.categories'),
+                    links: link(`${req.originalUrl}/${com.libelle}/`, 'directory.communes.link.categories'),
                 };
             })
         })).catch(err => errorHandler(err, res));
