@@ -42,7 +42,7 @@ const queries = {
                 '  JOIN poi_osm poi ON ST_CONTAINS(polygon.geometrie, poi.geom) ' +
                 '  WHERE poi.normalized_cat=$1 ' +
                 '  AND com.libelle=$2' +
-                '  ORDER BY poi.fid LIMIT $3 OFFSET $4;',
+                '  ORDER BY poi.status_order LIMIT $3 OFFSET $4;',
             values: [category, com, count, offset],
         }
     },
