@@ -24,6 +24,18 @@ exports.getCountry = (lon, lat) => {
 	});
 };
 
+exports.getCountryRule = (area) => {
+	return pool.query("SELECT legal_state FROM legal_rules WHERE country = $1 and category = 'default' LIMIT 1", [ area ])
+	.then(result => {
+		if(result.rows.length == 1) {
+			return result.rows[0].legal_state;
+		}
+		else {
+			return null;
+		}
+	});
+};
+
 exports.addContribution = (osmid, name, status, opening_hours, details, lon, lat, tags, croTags, language) => {
 	return pool.query(
 		"INSERT INTO contributions (osmid, name, status, opening_hours, details, geom, tags, cro_tags, language) VALUES ($1, $2, $3, $4, $5, ST_SetSRID(ST_Point($6, $7), 4326), $8, $9, $10)",

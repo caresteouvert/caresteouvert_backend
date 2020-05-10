@@ -45,6 +45,24 @@ app.get('/country', (req, res) => {
 	});
 });
 
+app.get('/country2', (req, res) => {
+	if(!RGX_COORDS.test(req.query.lat)) {
+		return res.status(400).send("Invalid lat : "+req.query.lat);
+	}
+
+	if(!RGX_COORDS.test(req.query.lon)) {
+		return res.status(400).send("Invalid lon : "+req.query.lon);
+	}
+	let area;
+	return db.getCountry(req.query.lon, req.query.lat)
+	.then(result => { area = result; return db.getCountryRule(area) })
+	.then(result => res.json({ area, legal_state: result }))
+	.catch(e => {
+		console.error(e);
+		res.status(500).send("An error happened when searching country");
+	});
+});
+
 app.post("/contribute/:type/:id", (req, res) => {
 	// Check OSM ID
 	if(!["node", "way", "relation"].includes(req.params.type)) {
