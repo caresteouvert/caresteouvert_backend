@@ -55,7 +55,7 @@ app.get('/country2', (req, res) => {
 	}
 	let area;
 	return db.getCountry(req.query.lon, req.query.lat)
-	.then(result => { area = result; return db.getCountryRule(area) })
+	.then(result => { area = result; return db.getCountryRule(area.split('-')[0]) })
 	.then(result => res.json({ area, legal_state: result }))
 	.catch(e => {
 		console.error(e);
