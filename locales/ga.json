@@ -1,0 +1,19 @@
+{
+    "status": {
+        "open": "oscailte le linn glasála",
+        "closed": "dúnta le linn glasála"
+    },
+    "note": {
+        "header": "Note #covid19 #caresteouvert #TáimidOscailte {HASHTAG_COUNTRY}",
+        "name": "Ainm:",
+        "status": "Staid:",
+        "details": "Sonraí:",
+        "url": "Seoladh gréasáin:",
+        "footer": "Chun an nóta seo a shocrú, opening_hours:covid19 agus description:covid19: https://wiki.openstreetmap.org/wiki/Key:opening_hours:covid19",
+        "unknown": "Anaithnid"
+    },
+    "changeset": {
+        "editor": "taimidoscailte.ie",
+        "comment": "Eolas faoi ghlasáil # covid19 #caresteouvert"
+    }
+}
