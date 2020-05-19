@@ -27,6 +27,18 @@ const columns = {
 }
 
 const queries = {
+    coms_by_population: (count, offset) => {
+        return {
+            name: 'coms_by_population',
+            text: 'SELECT infos.population, com.com, com.libelle AS com_libelle, dep.libelle AS dep_libelle, reg.libelle AS reg_libelle' +
+                '  FROM infos_communes AS infos' +
+                '  JOIN cog_commune AS com ON com.com=infos.insee_com' +
+                '  JOIN cog_departement AS dep ON dep.dep=com.dep' +
+                '  JOIN cog_region AS reg ON reg.reg=dep.reg' +
+                '  ORDER BY infos.population DESC LIMIT $1 OFFSET $2;',
+            values: [count, offset],
+        }
+    },
     pois_by_com_and_cat: (category, com, count, offset) => {
         return {
             name: 'pois_by_category_and_com',
@@ -90,6 +102,12 @@ const queries = {
 }
 
 module.exports = {
+    listComsByPopulation: (count, page) => {
+        const offset = count * page;
+        const query = queries.coms_by_population(count, offset);
+        return pgPool.query(query)
+            .then(res => res.rows);
+    },
     listPoisByCat: (cat, count, page) => {
         const offset = count * page;
         const query = queries.pois_by_cat(cat, count, offset);

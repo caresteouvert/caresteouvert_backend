@@ -15,6 +15,29 @@ const link = (href, title, rel = 'self', type = 'application/json') => {
 };
 
 /**
+ * Route to top populated communes
+ */
+router.get(`/top`, function (req, res) {
+    const page = req.query['page'] ? parseInt(req.query['page']) : 0;
+    db.listComsByPopulation(elementPerPage, page)
+        .then(infosCom => {
+            res.json({
+                links: [
+                    link(req.originalUrl, 'directory.top.title'),
+                ],
+                data: infosCom.map(infoCom => {
+                    return {
+                        type: 'directory.communes.type',
+                        id: infoCom.com,
+                        properties: infoCom,
+                        links: link(`${req.baseUrl}/${infoComs.reg}/${infoComs.dep}/${infoComs.com}`, 'directory.communes.title'),
+                    };
+                })
+            })
+        }).catch(err => errorHandler(err, res));
+});
+
+/**
  * Route to Regions list
  */
 router.get(`/`, function (req, res) {
