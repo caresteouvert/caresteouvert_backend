@@ -48,7 +48,7 @@ exports.saveCroPoi = (osmid, tags) => {
 };
 
 exports.getContributionsForUpload = () => {
-	return pool.query("SELECT id, osmid, status, opening_hours, tags, language, ST_ClusterDBSCAN(geom, eps := 2, minpoints := 1) OVER () AS cluster FROM contributions WHERE NOT sent_to_osm AND details IS NULL AND status IN ('open', 'closed') LIMIT 1000")
+	return pool.query("SELECT id, osmid, status, opening_hours, details, tags, language, ST_ClusterDBSCAN(geom, eps := 2, minpoints := 1) OVER () AS cluster FROM contributions WHERE NOT sent_to_osm AND status IN ('open', 'closed') LIMIT 1000")
 	.then(result => {
 		if(!result || !result.rows || result.rows.length === 0) { return []; }
 		else {
