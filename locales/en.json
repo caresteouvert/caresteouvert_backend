@@ -1,7 +1,7 @@
 {
     "status": {
-        "open": "open during lockdown",
-        "closed": "closed during lockdown"
+        "open": "open during sanitary crisis",
+        "closed": "closed during sanitary crisis"
     },
     "note": {
         "header": "Note #covid19 #caresteouvert {HASHTAG_COUNTRY}",
@@ -14,6 +14,6 @@
     },
     "changeset": {
         "editor": "caresteouvert.fr",
-        "comment": "Information about lockdown #covid19 #caresteouvert"
+        "comment": "Information about sanitary crisis #covid19 #caresteouvert"
     }
 }
