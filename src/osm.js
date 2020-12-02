@@ -4,6 +4,7 @@ global.btoa = str => Buffer.from(str, 'binary').toString('base64');
 const OsmRequest = require("osm-request");
 const db = require('./db');
 
+const REMOVE_COVID19_TAGS = ["delivery", "drive_through", "takeaway"];
 const languageFallback = process.env.OSM_LANG || "fr";
 const delay = parseInt(process.env.DELAY_OSM) || 300000;
 let delayedContributionsSent = [];
@@ -135,6 +136,11 @@ function prepareSendChangeset(contribs) {
 						else if(contrib.status === "closed") {
 							tags["opening_hours:covid19"] = "off";
 						}
+
+						// Remove suffixed covid19 tags if we have default tag in contribution
+						REMOVE_COVID19_TAGS.filter(cvt => tags[cvt]).forEach(cvt => {
+							elem = osmApi.removeTag(elem, cvt+":covid19");
+						});
 
 						// Send to API
 						elem = osmApi.setTags(elem, tags);
