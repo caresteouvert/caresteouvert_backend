@@ -130,8 +130,8 @@ function prepareSendChangeset(contribs) {
 							tags["description:covid19"] = contrib.details.trim();
 						}
 
-						if(contrib.status === "open") {
-							tags["opening_hours:covid19"] = contrib.opening_hours || "open";
+						if(contrib.status === "open" && contrib.opening_hours) {
+							tags["opening_hours:covid19"] = contrib.opening_hours === osmApi.getTag("opening_hours") ? "same" : contrib.opening_hours;
 						}
 						else if(contrib.status === "closed") {
 							tags["opening_hours:covid19"] = "off";
