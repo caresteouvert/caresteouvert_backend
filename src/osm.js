@@ -155,7 +155,7 @@ function prepareSendChangeset(contribs) {
 					}
 
 					if(contrib.status === "open" && contrib.opening_hours) {
-						tags["opening_hours:covid19"] = contrib.opening_hours === osmApi.getTag("opening_hours") ? "same" : contrib.opening_hours;
+						tags["opening_hours:covid19"] = contrib.opening_hours === elemStartTags.opening_hours ? "same" : contrib.opening_hours;
 					}
 					else if(contrib.status === "closed") {
 						tags["opening_hours:covid19"] = "off";
@@ -169,7 +169,7 @@ function prepareSendChangeset(contribs) {
 					elem = osmApi.setTags(elem, tags);
 					const elemEndTags = osmApi.getTags(elem);
 
-					if(!isEquivalent(elemStartTags, elemEndTags)) {
+					if(Object.keys(tags).length > 0 && !isEquivalent(elemStartTags, elemEndTags)) {
 						elem = osmApi.setTimestampToNow(elem);
 
 						// Create changeset if not existing
